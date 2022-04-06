@@ -3,7 +3,7 @@ const Book = require("../models/Book");
 const { validationResult } = require("express-validator");
 
 get_books = (req, res, next) => {
-  Book.find()
+  Book.aggregate([{ $project: { _id: 0, __v: 0 } }])
     .then((data) => res.status(200).json({ success: true, message: data }))
     .catch((err) => res.status(400).json({ success: false, message: err }));
 };
@@ -34,7 +34,7 @@ update_books = (req, res, next) => {
 };
 delete_books = (req, res, next) => {
   const data = req.body;
-  const id = data.id;
+  const id = data._id;
   Book.deleteMany({ _id: id })
     .then((data) => {
       res.status(200).json({ success: true, message: data });
